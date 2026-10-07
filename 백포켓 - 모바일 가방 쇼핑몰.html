@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>백포켓 - 내 소지품이 들어가는 가방</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap">
+<style>
+:root{--bg:#f2f4ee;--card:#fff;--ink:#16213a;--sub:#5d667a;--line:#d9ddd2;--pop:#f2b705;--popink:#16213a;--ok:#2f7d4f;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+:root:not([data-theme="light"]){}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#111826;--card:#1b2538;--ink:#eef1f7;--sub:#9aa5bd;--line:#2c3850;--ok:#6fcf97}}
+:root[data-theme="dark"]{--bg:#111826;--card:#1b2538;--ink:#eef1f7;--sub:#9aa5bd;--line:#2c3850;--ok:#6fcf97}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Noto Sans KR",system-ui,sans-serif;line-height:1.5}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--pop);outline-offset:2px}
+.app{max-width:480px;margin:0 auto;min-height:100vh;padding-bottom:84px}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-bottom:1px solid var(--line)}
+.logo{font-weight:900;font-size:22px;letter-spacing:-.5px;display:flex;align-items:center;gap:8px}
+.logo i{width:26px;height:26px;border-radius:8px 8px 10px 10px;background:var(--ink);position:relative;display:inline-block}
+.logo i:after{content:"";position:absolute;left:6px;right:6px;top:7px;height:6px;border-radius:3px;background:var(--pop)}
+.cartbtn{border:1px solid var(--line);background:var(--card);border-radius:20px;padding:6px 14px;font-weight:700;font-size:14px}
+h1{font-size:28px;line-height:1.25;letter-spacing:-1px;margin:22px 18px 6px;font-weight:900}
+.lead{margin:0 18px 16px;color:var(--sub);font-size:14px}
+.sec{padding:0 18px;margin-bottom:14px}
+.lab{font-weight:700;font-size:14px;margin-bottom:8px;display:flex;justify-content:space-between}
+.lab span{color:var(--sub);font-weight:400}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1.5px solid var(--line);background:var(--card);border-radius:999px;padding:8px 14px;font-size:14px;font-weight:500}
+.chip[aria-pressed=true]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.cats{display:flex;gap:6px;overflow-x:auto;padding:0 18px 4px;margin-bottom:12px}
+.cat{flex:none;border:0;background:none;padding:8px 4px;margin-right:10px;font-weight:700;font-size:15px;color:var(--sub);border-bottom:3px solid transparent}
+.cat[aria-selected=true]{color:var(--ink);border-color:var(--pop)}
+.result{margin:0 18px 12px;padding:12px 14px;border-radius:12px;background:var(--card);border:1px solid var(--line);font-size:14px}
+.result b{color:var(--ok)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:0 18px}
+.p{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;text-align:left;padding:0;display:block;width:100%}
+.p .img{background:var(--sage,#e3e9dc);display:flex;justify-content:center;padding:14px 0 8px}
+.p .t{padding:10px 12px 12px}
+.p .n{font-weight:700;font-size:15px}
+.p .m{font-size:12px;color:var(--sub)}
+.p .pr{font-weight:900;margin-top:4px}
+.empty{grid-column:1/-1;text-align:center;color:var(--sub);padding:40px 10px;font-size:14px}
+nav{position:fixed;bottom:0;left:0;right:0;z-index:6;background:var(--card);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px)}
+nav div{max-width:480px;margin:0 auto;display:flex}
+nav button{flex:1;border:0;background:none;padding:12px 0;font-size:13px;font-weight:700;color:var(--sub)}
+nav button[aria-current=true]{color:var(--ink)}
+.sheet{position:fixed;inset:0;z-index:20;background:rgba(10,15,30,.55);display:none;align-items:flex-end;justify-content:center}
+.sheet.on{display:flex}
+.pan{background:var(--bg);width:100%;max-width:480px;max-height:92vh;overflow:auto;border-radius:20px 20px 0 0;padding:18px 18px calc(24px + env(safe-area-inset-bottom,0px));animation:up .22s ease-out}
+@keyframes up{from{transform:translateY(40px);opacity:0}}
+@media (prefers-reduced-motion:reduce){.pan{animation:none}}
+.top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.x{border:1px solid var(--line);background:var(--card);border-radius:50%;width:36px;height:36px;font-size:18px;flex:none}
+.tabs{display:flex;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:4px;margin:14px 0}
+.tabs button{flex:1;border:0;background:none;border-radius:9px;padding:8px 0;font-weight:700;font-size:14px;color:var(--sub)}
+.tabs button[aria-selected=true]{background:var(--ink);color:var(--bg)}
+.stage{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px;text-align:center}
+.stage svg{max-width:100%;height:auto}
+input[type=range]{width:100%;accent-color:var(--pop)}
+.row{display:flex;gap:10px;align-items:center;margin:10px 0;font-size:14px}
+.row label{flex:none;width:44px;font-weight:700}
+.row input[type=number]{width:80px;padding:8px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);font:inherit}
+.spec{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}
+.spec div{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px;text-align:center;font-size:12px;color:var(--sub)}
+.spec b{display:block;font-size:17px;color:var(--ink)}
+.fit{font-size:13px;color:var(--sub);margin:8px 0}
+.buy{width:100%;border:0;background:var(--pop);color:var(--popink);font-weight:900;font-size:16px;padding:15px;border-radius:12px;margin-top:10px}
+.ci{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--line);font-size:14px}
+.ci button{border:1px solid var(--line);background:var(--card);border-radius:8px;padding:4px 10px}
+.toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:20px;font-size:14px;z-index:30;display:none}
+</style>
+</head>
+<body>
+<div class="app">
+<header><div class="logo"><i></i>백포켓</div><button class="cartbtn" id="cartBtn">장바구니 0</button></header>
+<h1>내 소지품이 들어가는<br>가방만 보여드려요</h1>
+<p class="lead">오늘 챙기는 물건을 고르면, 들어가는 가방만 남아요.</p>
+<div class="sec"><div class="lab">내 소지품 <span id="cnt">선택 없음</span></div><div class="chips" id="items"></div></div>
+<div class="cats" role="tablist" id="cats"></div>
+<div class="result" id="result"></div>
+<div class="grid" id="grid"></div>
+</div>
+<nav><div><button aria-current="true" id="nHome">홈</button><button id="nFit">내 체형</button><button id="nCart">장바구니</button></div></nav>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true"><div class="pan" id="pan"></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+const ITEMS=[
+ {k:'l13',n:'노트북 13"',f:b=>b.lap>=13},{k:'l15',n:'노트북 15"',f:b=>b.lap>=15},
+ {k:'tab',n:'태블릿',f:b=>b.lap>0||b.tab},{k:'a4',n:'A4 서류',f:b=>b.a4},
+ {k:'bot',n:'텀블러',f:b=>b.bot},{k:'umb',n:'접이식 우산',f:b=>b.umb},
+ {k:'lun',n:'도시락',f:b=>b.lun},{k:'pch',n:'파우치',f:b=>true}
+];
+const BAGS=[
+ {id:1,n:'오피스 토트',cat:'출근용',c:'#16213a',w:38,h:30,d:12,lap:14,a4:1,bot:1,umb:0,lun:0,tab:1,po:4,zp:2,pr:89000},
+ {id:2,n:'데일리 백팩',cat:'노트북용',c:'#6b7a3a',w:30,h:44,d:14,lap:16,a4:1,bot:1,umb:1,lun:1,tab:1,po:7,zp:4,pr:79000},
+ {id:3,n:'미니 크로스',cat:'보조가방',c:'#c58b4e',w:22,h:16,d:7,lap:0,a4:0,bot:0,umb:0,lun:0,tab:0,po:3,zp:2,pr:49000},
+ {id:4,n:'슬림 브리프',cat:'출근용',c:'#3a3f4b',w:40,h:29,d:8,lap:15,a4:1,bot:0,umb:0,lun:0,tab:1,po:5,zp:3,pr:119000},
+ {id:5,n:'롤탑 숄더',cat:'출근용',c:'#b4532f',w:34,h:34,d:13,lap:13,a4:1,bot:1,umb:0,lun:1,tab:1,po:5,zp:3,pr:94000},
+ {id:6,n:'슬링 파우치',cat:'보조가방',c:'#7fa08a',w:26,h:17,d:8,lap:0,a4:0,bot:1,umb:0,lun:0,tab:1,po:4,zp:3,pr:39000},
+ {id:7,n:'트래블 백팩',cat:'노트북용',c:'#d49a00',w:32,h:48,d:18,lap:17,a4:1,bot:1,umb:1,lun:1,tab:1,po:9,zp:5,pr:109000}
+];
+const CATS=['전체','출근용','노트북용','보조가방'];
+let sel=new Set(),cat='전체',cart={},cur=null,tab='in';
+const $=id=>document.getElementById(id),won=n=>n.toLocaleString('ko-KR')+'원';
+const fits=b=>[...sel].every(k=>ITEMS.find(i=>i.k===k).f(b));
+
+function icon(b,s=96){const w=b.w/(b.w+b.h)*70+30,h=b.h/(b.w+b.h)*70+30,x=(100-w)/2,y=(100-h)/2+6;
+ return `<svg width="${s}" height="${s}" viewBox="0 0 100 100" aria-hidden="true"><path d="M${44},${y} q0,-14 6,-14 q6,0 6,14" fill="none" stroke="${b.c}" stroke-width="3"/><rect x="${x}" y="${y}" width="${w}" height="${h}" rx="9" fill="${b.c}"/><rect x="${x+6}" y="${y+h*.42}" width="${w-12}" height="${h*.3}" rx="5" fill="#fff" opacity=".18"/><rect x="${50-6}" y="${y+h*.5}" width="12" height="5" rx="2.5" fill="#f2b705"/></svg>`}
+
+function interior(b,deg){const c=Math.cos(deg*Math.PI/180),front=c>=0,sx=Math.max(Math.abs(c),.04),W=180,H=220;
+ let g=`<rect width="${W}" height="${H}" rx="14" fill="${front?b.c:'#f4efe4'}" stroke="${b.c}" stroke-width="4"/>`;
+ if(front){g+=`<rect x="20" y="${H*.45}" width="${W-40}" height="${H*.3}" rx="8" fill="#fff" opacity=".18"/><rect x="${W/2-14}" y="${H*.55}" width="28" height="9" rx="4.5" fill="#f2b705"/><path d="M20 ${H*.16}H${W-20}" stroke="#f2b705" stroke-width="3" stroke-dasharray="6 4"/>`}
+ else{let y=14;g+=`<path d="M12 12H${W-12}" stroke="${b.c}" stroke-width="3" stroke-dasharray="6 4"/>`;y=22;
+  if(b.lap){g+=`<rect x="14" y="${y}" width="${W-28}" height="${H*.4}" rx="6" fill="#d6dccb"/><text x="${W/2}" y="${y+H*.2}" text-anchor="middle" font-size="12" fill="#16213a" transform="scale(1)" >노트북 ${b.lap}"</text>`;y+=H*.4+8}
+  const n=b.po,cols=2,rw=(W-28-8)/cols,rh=(H-y-14)/Math.ceil(n/cols)-6;
+  for(let i=0;i<n;i++){const cx=14+(i%cols)*(rw+8),cy=y+Math.floor(i/cols)*(rh+6);g+=`<rect x="${cx}" y="${cy}" width="${rw}" height="${rh}" rx="5" fill="${i<b.zp?'#f2b705':'#e0d9c7'}" opacity="${i<b.zp?.85:1}"/>`}}
+ return `<svg viewBox="0 0 220 240" width="260"><g transform="translate(110 10) scale(${sx} 1) translate(-90 0)">${g}</g></svg><div style="font-size:13px;color:var(--sub)">${front?'겉면':'내부'} · 노란 칸은 지퍼 포켓</div>`}
+
+function body(b,hc,bt){const s=190/hc*1.0,px=cm=>cm*s*(hc>180?.95:1),bw=[30,36,44][bt],H=px(hc)>240?240:px(hc),top=250-H;
+ const k=H/hc,bh=b.h*k,bwid=b.w*k,hy=top+H*.47,hx=110+(bw*k)/2+2;
+ return `<svg viewBox="0 0 240 260" width="280" aria-label="체형 비교"><circle cx="110" cy="${top+H*.07}" r="${H*.065}" fill="#9aa5bd"/><rect x="${110-bw*k/2}" y="${top+H*.15}" width="${bw*k}" height="${H*.34}" rx="${bw*k/3}" fill="#9aa5bd"/><rect x="${110-bw*k*.4}" y="${top+H*.49}" width="${bw*k*.34}" height="${H*.51}" rx="4" fill="#8791aa"/><rect x="${110+bw*k*.06}" y="${top+H*.49}" width="${bw*k*.34}" height="${H*.51}" rx="4" fill="#8791aa"/><rect x="${hx}" y="${hy-bh*.2}" width="${Math.min(bwid,100)}" height="${bh}" rx="6" fill="${b.c}" opacity=".95"/><path d="M110 250H232" stroke="var(--line)"/></svg>`}
+
+function renderItems(){$('items').innerHTML=ITEMS.map(i=>`<button class="chip" aria-pressed="${sel.has(i.k)}" data-k="${i.k}">${i.n}</button>`).join('');
+ $('cnt').textContent=sel.size?sel.size+'개 선택':'선택 없음'}
+function renderCats(){$('cats').innerHTML=CATS.map(c=>`<button class="cat" role="tab" aria-selected="${c===cat}" data-c="${c}">${c}</button>`).join('')}
+function renderGrid(){const all=BAGS.filter(b=>cat==='전체'||b.cat===cat),ok=all.filter(fits);
+ $('result').innerHTML=sel.size?`<b>${ok.length}개</b> 가방에 선택한 소지품이 모두 들어가요.`:`가방 ${all.length}개 · 소지품을 고르면 맞는 가방만 추려드려요.`;
+ $('grid').innerHTML=ok.length?ok.map(b=>`<button class="p" data-id="${b.id}"><div class="img">${icon(b)}</div><div class="t"><div class="m">${b.cat}</div><div class="n">${b.n}</div><div class="m">포켓 ${b.po} · 지퍼 ${b.zp}</div><div class="pr">${won(b.pr)}</div></div></button>`).join(''):`<div class="empty">조건에 맞는 가방이 없어요.<br>소지품을 줄이거나 카테고리를 바꿔보세요.</div>`}
+function cartN(){return Object.values(cart).reduce((a,b)=>a+b,0)}
+function refreshCart(){$('cartBtn').textContent='장바구니 '+cartN()}
+function toast(t){const e=$('toast');e.textContent=t;e.style.display='block';clearTimeout(toast.t);toast.t=setTimeout(()=>e.style.display='none',1600)}
+function open(html){$('pan').innerHTML=html;$('sheet').classList.add('on')}
+function close(){$('sheet').classList.remove('on')}
+
+function detail(id,t){cur=BAGS.find(b=>b.id===id);tab=t||tab;const b=cur;
+ const miss=[...sel].map(k=>ITEMS.find(i=>i.k===k)).filter(i=>!i.f(b));
+ let stage='';
+ if(tab==='in')stage=`<div class="stage"><div id="v">${interior(b,0)}</div><input type="range" min="0" max="360" value="0" id="rot" aria-label="가방 360도 회전"><div class="fit">슬라이더를 돌려 겉면과 내부를 확인하세요</div></div>`;
+ else stage=`<div class="stage"><div id="v">${body(b,165,1)}</div><div class="row"><label>키</label><input type="number" id="hc" value="165" min="140" max="200"> cm</div><div class="row"><label>체형</label><div class="chips" id="bt">${['슬림','보통','건장'].map((x,i)=>`<button class="chip" aria-pressed="${i==1}" data-i="${i}">${x}</button>`).join('')}</div></div><div class="fit">실제 크기 비율로 그린 미리보기예요 (가방 ${b.w}×${b.h} cm)</div></div>`;
+ open(`<div class="top"><div><div class="m" style="color:var(--sub);font-size:13px">${b.cat}</div><h2 style="margin:0;font-size:22px">${b.n}</h2></div><button class="x" data-close aria-label="닫기">×</button></div>
+ <div class="tabs" role="tablist"><button role="tab" aria-selected="${tab==='in'}" data-t="in">내부 구조</button><button role="tab" aria-selected="${tab==='me'}" data-t="me">내 체형에 매보기</button></div>${stage}
+ <div class="spec"><div><b>${b.w}×${b.h}×${b.d}</b>가로×세로×폭 cm</div><div><b>${b.po}</b>포켓</div><div><b>${b.zp}</b>지퍼</div></div>
+ <div class="fit">${sel.size?(miss.length?'⚠ 안 들어가는 소지품: '+miss.map(i=>i.n).join(', '):'✓ 선택한 소지품이 모두 들어가요'):'소지품을 선택하면 들어가는지 알려드려요'}${b.lap?` · 노트북 최대 ${b.lap}"`:''}</div>
+ <button class="buy" data-add="${b.id}">${won(b.pr)} · 장바구니 담기</button>`);
+ if(tab==='in')$('rot').oninput=e=>$('v').innerHTML=interior(b,+e.target.value);
+ else{let bt=1;const up=()=>{$('v').innerHTML=body(b,Math.max(140,Math.min(200,+$('hc').value||165)),bt)};$('hc').oninput=up;
+  $('bt').onclick=e=>{const i=e.target.dataset.i;if(i==null)return;bt=+i;[...$('bt').children].forEach((c,j)=>c.setAttribute('aria-pressed',j==bt));up()}}}
+
+function cartView(){const ids=Object.keys(cart).filter(k=>cart[k]);let tot=0;
+ const rows=ids.map(k=>{const b=BAGS.find(x=>x.id==k);tot+=b.pr*cart[k];return `<div class="ci"><span>${b.n} × ${cart[k]}</span><span>${won(b.pr*cart[k])} <button data-rm="${k}" aria-label="${b.n} 빼기">빼기</button></span></div>`}).join('');
+ open(`<div class="top"><h2 style="margin:0;font-size:22px">장바구니</h2><button class="x" data-close aria-label="닫기">×</button></div>${rows||'<div class="empty" style="padding:30px 0;color:var(--sub)">담은 가방이 없어요. 마음에 드는 가방을 담아보세요.</div>'}${ids.length?`<div class="ci" style="font-weight:900"><span>합계</span><span>${won(tot)}</span></div><button class="buy" data-order>주문하기</button>`:''}`)}
+
+document.addEventListener('click',e=>{const t=e.target.closest('button,.sheet');if(!t)return;
+ if(t.id==='sheet'&&e.target===t)return close();
+ if(t.dataset.k){sel.has(t.dataset.k)?sel.delete(t.dataset.k):sel.add(t.dataset.k);renderItems();renderGrid()}
+ else if(t.dataset.c){cat=t.dataset.c;renderCats();renderGrid()}
+ else if(t.dataset.id)detail(+t.dataset.id,'in')
+ else if(t.dataset.t)detail(cur.id,t.dataset.t)
+ else if(t.dataset.add){cart[t.dataset.add]=(cart[t.dataset.add]||0)+1;refreshCart();toast(cur.n+' 담았어요')}
+ else if(t.dataset.rm){cart[t.dataset.rm]--;refreshCart();cartView()}
+ else if(t.dataset.order){cart={};refreshCart();close();toast('주문이 접수됐어요')}
+ else if('close' in t.dataset)close()
+ else if(t.id==='cartBtn'||t.id==='nCart')cartView()
+ else if(t.id==='nFit')detail((BAGS.find(fits)||BAGS[0]).id,'me')
+ else if(t.id==='nHome'){close();scrollTo({top:0})}
+});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')close()});
+renderItems();renderCats();renderGrid();
+</script>
+</body>
+</html>
